@@ -1,9 +1,8 @@
 <script setup>
-import { onMounted } from 'vue'
-import { useTemplateRef } from '#imports'
 import * as d3 from 'd3'
 
 const wheel = useTemplateRef('wheel')
+const prize = ref('No prize')
 
 const data = [
   { label: 'Alex', value: 40 },
@@ -12,7 +11,7 @@ const data = [
 ]
 
 const size = 400
-const pie = d3.pie().value(d => d.value)
+const arcs = d3.pie().value(d => d.value)(data)
 const arc = d3.arc().innerRadius(0).outerRadius(size / 2)
 const color = d3.scaleOrdinal(d3.schemeSet2)
 
@@ -26,14 +25,14 @@ onMounted(() => {
     .attr('transform', `translate(${size/2},${size/2})`)
 
   g.selectAll('path')
-    .data(pie(data))
+    .data(arcs)
     .enter()
     .append('path')
     .attr('d', arc)
     .attr('fill', d => color(d.data.label))
 
   const texts = g.selectAll('text')
-    .data(pie(data))
+    .data(arcs)
     .enter()
     .append('text')
     .text(d => d.data.label)
@@ -53,13 +52,29 @@ onMounted(() => {
         const [x, y] = arc.centroid(d)
         return `translate(${x},${y}) rotate(${-angle})`
       })
+
+    setTimeout(() => {
+      const normalizedAngle = (360 - (angle % 360)) % 360
+      const found = arcs.find(d => {
+        const start = (d.startAngle * 180 / Math.PI) % 360
+        const end = (d.endAngle * 180 / Math.PI) % 360
+
+        if (start < end) {
+          return normalizedAngle >= start && normalizedAngle < end
+        } else {
+          return normalizedAngle >= start || normalizedAngle < end
+        }
+      })
+
+      prize.value = found ? found.data.label : 'No prize'
+    }, 3100)
   }, 5000)
 })
 </script>
 
 <template>
   <UPageSection>
-    <UPageCTA title="D3 Wheel" orientation="horizontal">
+    <UPageCTA title="D3 Wheel" orientation="horizontal" :description="`Prize: ${ prize }`">
       <div ref="wheel" />
     </UPageCTA>
   </UPageSection>
