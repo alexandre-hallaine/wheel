@@ -7,5 +7,6 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxt/ui-pro'
   ],
-  css: ['~/assets/css/main.css']
+  css: ['~/assets/css/main.css'],
+  app: {head: {title: 'Wheel'}}
 })
