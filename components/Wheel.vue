@@ -22,9 +22,9 @@ const props = defineProps({
   }
 })
 
-const arcs = d3.pie().value(d => d.value)(props.data)
+const arcs = d3.pie().sort(null).value(d => d.value)(props.data)
 const arc = d3.arc().innerRadius(0).outerRadius(props.size / 2)
-const color = d3.scaleOrdinal(d3.schemeSet2)
+const color = d3.scaleOrdinal(d3.schemeSet3)
 
 let g, texts
 onMounted(() => {
@@ -36,6 +36,13 @@ onMounted(() => {
   g = svg.append('g')
       .attr('transform', `translate(${props.size / 2},${props.size / 2})`)
       .attr('id', 'wheel')
+
+  svg.append('path')
+      .attr('d', d3.line()([
+        [props.size / 2 - 10, 0],
+        [props.size / 2 + 10, 0],
+        [props.size / 2, 20],
+      ])!)
 
   g.selectAll('path')
       .data(arcs)
@@ -74,10 +81,10 @@ watch(toRef(props, 'angle'), (newAngle, oldAngle) => {
       })
 
   setTimeout(() => {
-    const finalAngle = newAngle % 360
-    const segmentAngle = 360 / props.data.length
-    const index = Math.floor((360 - finalAngle + segmentAngle / 2) % 360 / segmentAngle)
-    emit('result', props.data[index]?.label)
+    const finalAngle = (360 - (newAngle % 360)) % 360
+    const angleRad = finalAngle * Math.PI / 180
+    const found = arcs.find(arc => angleRad >= arc.startAngle && angleRad < arc.endAngle)
+    emit('result', found?.data.label)
   }, props.time)
 })
 </script>

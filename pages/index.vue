@@ -1,8 +1,15 @@
 <script setup>
 const data = [
   { label: 'Alex', value: 40 },
-  { label: 'Bob', value: 25 },
-  { label: 'Charlie', value: 35 }
+  {label: 'Bob', value: 35},
+  {label: 'Charlie', value: 30},
+  {label: 'Diana', value: 25},
+  {label: 'Eve', value: 50},
+  {label: 'Frank', value: 20},
+  {label: 'Grace', value: 30},
+  {label: 'Hank', value: 40},
+  {label: 'Ivy', value: 45},
+  {label: 'Jack', value: 45}
 ]
 
 const angle = ref(0)
