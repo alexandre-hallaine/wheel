@@ -1,24 +1,27 @@
 <script setup lang="ts">
 import { useQuerySyncedState } from '~/composables/useQuerySyncedState'
 
-const { state: data, rawQueryValue } = useQuerySyncedState<{ label: string; value: number }[]>(
+const { state: data, rawQueryValue } = useQuerySyncedState<{ label: string; value: number, color: string }[]>(
     'data',
     [
-      { label: 'Alex', value: 120 },
-      { label: 'Bob', value: 120 },
-      { label: 'Charlie', value: 120 },
+      { label: 'Alex', value: 30, color: '#ff6b6b' },
+      { label: 'Bob', value: 30, color: '#4ecdc4' },
+      { label: 'Charlie', value: 30, color: '#ffe66d' },
+      { label: 'Diana', value: 30, color: '#1a535c' },
+      { label: 'Eve', value: 30, color: '#f7fff7' },
     ]
 )
 
 const angle = ref(0)
-const prize = ref(null)
+const prize = ref<{ label: string; value: number, color: string } | null>(null)
 const input = ref('')
 
 function spin() { angle.value += Math.random() * 360 * 10 }
 
 function add() {
   if (!input.value.trim()) return
-  data.value.push({ label: input.value, value: 30 })
+  const color = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0')
+  data.value.push({ label: input.value, value: 30, color })
   input.value = ''
 }
 
@@ -64,7 +67,7 @@ function remove(i: number) {
                   <template #content>
                     <UPageCard>
                       <UInputNumber v-model="item.value" />
-                      <UColorPicker />
+                      <UColorPicker v-model="item.color" />
                     </UPageCard>
                   </template>
                 </UPopover>

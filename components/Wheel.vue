@@ -5,7 +5,7 @@ const spinning = ref(false)
 const wheel = useTemplateRef('wheel')
 const emit = defineEmits(['result'])
 const props = defineProps({
-  data: { type: Array as () => { label: string; value: number }[], required: true },
+  data: { type: Array as () => { label: string; value: number, color: string }[], required: true },
   angle: { type: Number, required: true },
   size: { type: Number, default: 400 },
   time: { type: Number, default: 3000 }
@@ -13,7 +13,6 @@ const props = defineProps({
 
 const pie = d3.pie().sort(null).value(d => d.value)
 const arc = d3.arc().innerRadius(0).outerRadius(props.size / 2)
-const color = d3.scaleOrdinal(d3.schemeSet3)
 
 let g: d3.Selection<SVGGElement, unknown, null, undefined>, texts: d3.Selection<SVGTextElement, d3.PieArcDatum<any>, SVGGElement, unknown>
 
@@ -39,7 +38,7 @@ onMounted(() => {
       .enter()
       .append('path')
       .attr('d', arc)
-      .attr('fill', d => color(d.data.label))
+      .attr('fill', d => d.data.color)
 
   texts = g.selectAll('text')
       .data(arcs)
