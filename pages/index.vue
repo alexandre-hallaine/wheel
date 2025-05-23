@@ -13,7 +13,7 @@ const { state: data, rawQueryValue } = useQuerySyncedState<{ label: string; valu
 )
 
 const angle = ref(0)
-const prize = ref<{ label: string; value: number, color: string } | null>(null)
+const prize = ref<{ label: string; value: number, color: string, index: number } | null>(null)
 const input = ref('')
 
 function spin() { angle.value += Math.random() * 360 * 10 }
@@ -27,14 +27,26 @@ function add() {
 
 function remove(i: number) {
   data.value.splice(i, 1)
+  prize.value = null
 }
+
+const modalOpen = computed({
+  get: () => prize.value != null,
+  set: (val) => {
+    if (!val) prize.value = null
+  }
+})
 </script>
 
 <template>
   <UPageSection>
-    <UModal v-model:open="prize">
+    <UModal v-model:open="modalOpen">
       <template #content>
-        <UPageCard title="Winner" :description="prize?.label" />
+        <UPageCard v-if="prize" title="Winner" :description="prize.label" >
+          <template #footer>
+            <UButton label="Remove" @click="remove(prize.index)" />
+          </template>
+        </UPageCard>
       </template>
     </UModal>
 

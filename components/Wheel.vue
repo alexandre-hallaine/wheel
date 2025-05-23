@@ -73,7 +73,7 @@ watch(() => props.angle, (newAngle, oldAngle) => {
     const finalAngle = (360 - (newAngle % 360)) % 360
     const rad = finalAngle * Math.PI / 180
     const result = pie(props.data).find(d => rad >= d.startAngle && rad < d.endAngle)
-    emit('result', result?.data)
+    emit('result', {...result.data, index: result.index})
     spinning.value = false
   }, props.time)
 })
