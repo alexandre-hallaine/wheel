@@ -40,13 +40,9 @@ const modalOpen = computed({
 
 <template>
   <UPageSection>
-    <UModal v-model:open="modalOpen">
-      <template #content>
-        <UPageCard v-if="prize" title="Winner" :description="prize.label" >
-          <template #footer>
-            <UButton label="Remove" @click="remove(prize.index)" />
-          </template>
-        </UPageCard>
+    <UModal v-model:open="modalOpen" title="Winner" :description="prize?.label">
+      <template #footer>
+        <UButton label="Remove" @click="remove(prize.index)" />
       </template>
     </UModal>
 
